@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	config.LoadEnv()
+	config.Init()
 	app.Init()
 }
 

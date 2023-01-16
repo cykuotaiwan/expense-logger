@@ -6,7 +6,7 @@ import (
 )
 
 func Init() {
-	db.Connect()
+	db.Init()
 	router.Init()
 }
 

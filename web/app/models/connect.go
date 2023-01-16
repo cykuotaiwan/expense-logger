@@ -12,7 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var Client *mongo.Client
+var client *mongo.Client
+var ctx context.Context
 
 func Connect() {
 	username := os.Getenv("DBUSER")
@@ -20,28 +21,29 @@ func Connect() {
 	domain := os.Getenv("DBDOMAIN")
 	option := os.Getenv("DBOPTION")
 
-	url := "mongodb+srv://" + username + ":" + password + "@" + domain + "/?" + option
-	Client, err := mongo.NewClient(options.Client().ApplyURI(url))
+	url := "mongodb+srv://" + username + ":" + password +
+		"@" + domain + "/?" + option
+	client, err := mongo.NewClient(options.Client().ApplyURI(url))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	err = Client.Connect(ctx)
+	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer Client.Disconnect(ctx)
+	defer client.Disconnect(ctx)
 
 	// list db
-	dbs, err := Client.ListDatabaseNames(ctx, bson.M{})
+	dbs, err := client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(dbs)
 
-	books := Client.Database("test").Collection("books")
+	books := client.Database("test").Collection("books")
 	cursor, err := books.Find(ctx, bson.D{})
 	var result []bson.M
 	if err = cursor.All(ctx, &result); err != nil {
@@ -49,5 +51,8 @@ func Connect() {
 	}
 	fmt.Println(len(result))
 
-	// Client.Disconnect(ctx)
+}
+
+func Disconnect() {
+	client.Disconnect(ctx)
 }
