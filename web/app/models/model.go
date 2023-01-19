@@ -1,13 +1,13 @@
 package models
 
 import (
+	expense "expense-logger/web/app/models/expense"
+
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -23,36 +23,30 @@ func Connect() {
 
 	url := "mongodb+srv://" + username + ":" + password +
 		"@" + domain + "/?" + option
-	client, err := mongo.NewClient(options.Client().ApplyURI(url))
+	var err error
+	client, err = mongo.NewClient(options.Client().ApplyURI(url))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer client.Disconnect(ctx)
-
-	// list db
-	dbs, err := client.ListDatabaseNames(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(dbs)
-
-	books := client.Database("test").Collection("books")
-	cursor, err := books.Find(ctx, bson.D{})
-	var result []bson.M
-	if err = cursor.All(ctx, &result); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(len(result))
-
 }
 
 func Disconnect() {
 	client.Disconnect(ctx)
+}
+
+func Init() {
+	Connect()
+	expense.SetCollections(client, &ctx)
+}
+
+func Close() {
+	Disconnect()
 }
