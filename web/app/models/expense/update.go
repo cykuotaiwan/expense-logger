@@ -5,9 +5,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func UpdateExpense(exp expense) (*mongo.UpdateResult, error) {
+func UpdateExpense(newExpense Expense) (*mongo.UpdateResult, error) {
 	filter := bson.D{
-		{Key: "id", Value: exp.ID},
+		{Key: "id", Value: newExpense.ExpenseID},
 	}
 	update := bson.D{
 		{Key: "$set", Value: bson.D{

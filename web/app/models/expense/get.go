@@ -5,7 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetExpenseLatest(cnt int8, offset int8) ([]expense, error) {
+func GetExpenseLatest(cnt int8, offset int8) ([]Expense, error) {
 	option := options.Find()
 	option.SetSort(bson.M{"$natural": -1})
 	option.SetLimit(int64(cnt))
@@ -14,7 +14,7 @@ func GetExpenseLatest(cnt int8, offset int8) ([]expense, error) {
 	if err != nil {
 		return nil, err
 	}
-	var res []expense
+	var res []Expense
 	if err = cur.All(ctx, &res); err != nil {
 		return nil, err
 	}
