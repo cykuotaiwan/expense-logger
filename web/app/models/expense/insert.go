@@ -7,9 +7,20 @@ import (
 )
 
 func InsertItem(newItems []Item) (*mongo.InsertManyResult, error) {
+	if (newItems == nil) || (len(newItems) == 0) {
+		return nil, nil
+	}
+
 	items := make([]interface{}, len(newItems))
+	size := 0
 	for i := range newItems {
-		items[i] = newItems[i]
+		if !newItems[i].IsEmpty() {
+			items[i] = newItems[i]
+			size++
+		}
+	}
+	if size == 0 {
+		return nil, nil
 	}
 	res, err := itemCollection.InsertMany(
 		context.TODO(),
@@ -23,8 +34,12 @@ func InsertItem(newItems []Item) (*mongo.InsertManyResult, error) {
 }
 
 func InsertExpense(newExpense *Expense) (*mongo.InsertOneResult, error) {
+	if (newExpense == nil) || (*newExpense).IsEmpty() {
+		return nil, nil
+	}
+
 	res, err := expCollection.InsertOne(
-		ctx,
+		context.TODO(),
 		newExpense,
 	)
 
