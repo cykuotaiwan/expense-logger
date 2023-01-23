@@ -10,6 +10,39 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+func TestUpdateItem(t *testing.T) {
+	// db connection
+	config.Init()
+	db.Init()
+	defer db.Close()
+
+	// generate test data
+	var newItem = []exp.Item{
+		{
+			Name:  "Potatoes",
+			Price: 249,
+			Unit:  exp.Ulb,
+			Count: 3,
+		},
+	}
+
+	// insert test data
+	resTest, _ := exp.InsertItem(newItem)
+
+	t.Run("valid value", func(t *testing.T) {
+		id := (*resTest).InsertedIDs[0].(primitive.ObjectID)
+		item := newItem
+		item[0].Count = 10
+		res, err := exp.UpdateItem(item[0], id)
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if res == nil {
+			t.Error("update fail")
+		}
+	})
+}
+
 func TestUpdateExpense(t *testing.T) {
 	// db connection
 	config.Init()
