@@ -4,19 +4,19 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func UpdateItem(newItem Item, itemId primitive.ObjectID) (*mongo.UpdateResult, error) {
+func UpdateItem(newItem Item) (*mongo.UpdateResult, error) {
 	filter := bson.M{
-		"_id": bson.M{"$eq": itemId},
+		"_id": bson.M{"$eq": newItem.Id},
 	}
 
 	update := bson.D{
 		{
 			Key: "$set",
 			Value: bson.M{
+				"_id":       newItem.Id,
 				"name":      newItem.Name,
 				"price":     newItem.Price,
 				"count":     newItem.Count,
@@ -37,15 +37,16 @@ func UpdateItem(newItem Item, itemId primitive.ObjectID) (*mongo.UpdateResult, e
 	return res, nil
 }
 
-func UpdateExpense(newExpense Expense, expId primitive.ObjectID) (*mongo.UpdateResult, error) {
+func UpdateExpense(newExpense Expense) (*mongo.UpdateResult, error) {
 	filter := bson.M{
-		"_id": bson.M{"$eq": expId},
+		"_id": bson.M{"$eq": newExpense.Id},
 	}
 
 	update := bson.D{
 		{
 			Key: "$set",
 			Value: bson.M{
+				"_id":      newExpense.Id,
 				"datetime": newExpense.DateTime,
 				"shopName": newExpense.ShopName,
 				"total":    newExpense.Total,

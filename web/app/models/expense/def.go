@@ -19,6 +19,7 @@ const (
 
 // Price in cent
 type Item struct {
+	Id        primitive.ObjectID `json:"_id,omitempty" bson:"_id"`
 	Name      string             `json:"name" bson:"name"`
 	Price     uint32             `json:"price" bson:"price"`
 	Count     uint               `json:"count" bson:"count"`
@@ -28,6 +29,7 @@ type Item struct {
 
 // Total in cent
 type Expense struct {
+	Id       primitive.ObjectID   `json:"_id,omitempty" bson:"_id"`
 	DateTime time.Time            `json:"datetime" bson:"datetime"`
 	ShopName string               `json:"shopName" bson:"shopName"`
 	Total    uint32               `json:"total" bson:"total"`

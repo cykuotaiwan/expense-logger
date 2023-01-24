@@ -3,6 +3,7 @@ package expense
 import (
 	"context"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -15,6 +16,7 @@ func InsertItem(newItems []Item) (*mongo.InsertManyResult, error) {
 	size := 0
 	for i := range newItems {
 		if !newItems[i].IsEmpty() {
+			newItems[i].Id = primitive.NewObjectID()
 			items[i] = newItems[i]
 			size++
 		}
@@ -38,6 +40,7 @@ func InsertExpense(newExpense *Expense) (*mongo.InsertOneResult, error) {
 		return nil, nil
 	}
 
+	(*newExpense).Id = primitive.NewObjectID()
 	res, err := expCollection.InsertOne(
 		context.TODO(),
 		newExpense,

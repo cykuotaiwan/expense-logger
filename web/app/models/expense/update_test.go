@@ -32,8 +32,9 @@ func TestUpdateItem(t *testing.T) {
 	t.Run("valid value", func(t *testing.T) {
 		id := (*resTest).InsertedIDs[0].(primitive.ObjectID)
 		item := newItem
+		item[0].Id = id
 		item[0].Count = 10
-		res, err := exp.UpdateItem(item[0], id)
+		res, err := exp.UpdateItem(item[0])
 		if err != nil {
 			t.Error(err.Error())
 		}
@@ -62,8 +63,9 @@ func TestUpdateExpense(t *testing.T) {
 	t.Run("valid value", func(t *testing.T) {
 		id := (*resTest).InsertedID.(primitive.ObjectID)
 		expense := newExpense
+		expense.Id = id
 		expense.Total = 0
-		res, err := exp.UpdateExpense(expense, id)
+		res, err := exp.UpdateExpense(expense)
 		if err != nil {
 			t.Error(err.Error())
 		}
