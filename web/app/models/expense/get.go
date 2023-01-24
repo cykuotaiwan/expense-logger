@@ -31,10 +31,10 @@ func GetExpenseLatest(cnt uint8, offset uint8) ([]Expense, error) {
 
 func GetExpenseByDate(startDate, endDate time.Time) ([]Expense, error) {
 	if startDate.After(endDate) {
-		return nil, fmt.Errorf("Invalid Parameters: startDate should be earlier than endDate")
+		return nil, fmt.Errorf("invalid iarameters: startDate should be earlier than endDate")
 	}
 	if startDate.Equal(endDate) {
-		return nil, fmt.Errorf("Invalid Parameters: startDate should be earlier than endDate")
+		return nil, fmt.Errorf("nvalid iarameters: startDate should be earlier than endDate")
 	}
 
 	option := options.Find()
