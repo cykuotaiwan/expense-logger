@@ -16,13 +16,24 @@ var client *mongo.Client
 var ctx context.Context
 
 func Connect() {
-	username := os.Getenv("DBUSER")
-	password := os.Getenv("DBPWD")
-	domain := os.Getenv("DBDOMAIN")
-	option := os.Getenv("DBOPTION")
+	var url string
 
-	url := "mongodb+srv://" + username + ":" + password +
-		"@" + domain + "/?" + option
+	mode := os.Getenv("DBCONNMODE")
+	if mode == "LOCAL" {
+		port := os.Getenv("DBLOCALPORT")
+		url = "mongodb://localhost:" + port
+	} else if mode == "REMOTE" {
+		username := os.Getenv("DBUSER")
+		password := os.Getenv("DBPWD")
+		domain := os.Getenv("DBDOMAIN")
+		option := os.Getenv("DBOPTION")
+
+		url = "mongodb+srv://" + username + ":" + password +
+			"@" + domain + "/?" + option
+	} else {
+		log.Fatal("unsupported connect mode: " + mode)
+	}
+
 	var err error
 	client, err = mongo.NewClient(options.Client().ApplyURI(url))
 	if err != nil {
