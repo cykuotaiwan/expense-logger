@@ -20,6 +20,7 @@ func DeleteItem(itemId primitive.ObjectID) (*mongo.DeleteResult, error) {
 	}
 
 	if (*res).DeletedCount != 0 {
+		// update related expense
 		cursor, err := expCollection.Find(
 			context.TODO(),
 			bson.M{
