@@ -87,3 +87,45 @@ func TestDeleteItem(t *testing.T) {
 		}
 	})
 }
+
+func TestDeleteExpense(t *testing.T) {
+	// db connection
+	config.Init()
+	db.Init()
+	defer db.Close()
+
+	var newExpense = exp.Expense{
+		DateTime: time.Now(),
+		ShopName: "TestDeleteLoblaws",
+		Total:    2087,
+	}
+	resExp, _ := exp.InsertExpense(&newExpense)
+	expenseId := (*resExp).InsertedID.(primitive.ObjectID)
+
+	t.Run("delete non exist item", func(t *testing.T) {
+		nonExistExpenseId := expenseId
+		nonExistExpenseId[0] -= 128
+
+		resDel, err := exp.DeleteExpense(nonExistExpenseId)
+		if err != nil {
+			t.Error(err)
+		}
+		if resDel.DeletedCount != 0 {
+			t.Error(fmt.Errorf("deleted expense count: " +
+				strconv.FormatInt(resDel.DeletedCount, 10) + ", should be 0."))
+		}
+	})
+
+	t.Run("valid data", func(t *testing.T) {
+		resDel, err := exp.DeleteExpense(expenseId)
+		if err != nil {
+			t.Errorf(err.Error())
+		}
+		if (*resDel).DeletedCount != 1 {
+			t.Error(
+				fmt.Errorf("deleted count should be 1, instead of %d",
+					(*resDel).DeletedCount),
+			)
+		}
+	})
+}
