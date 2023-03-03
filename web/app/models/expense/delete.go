@@ -61,10 +61,9 @@ func DeleteItem(itemId primitive.ObjectID) (*mongo.DeleteResult, error) {
 	return res, nil
 }
 
-func DeleteExpense(id primitive.ObjectID) (*mongo.DeleteResult, error) {
-	filter := bson.M{"_id": id}
-
-	res, err := itemCollection.DeleteOne(
+func DeleteExpense(expId primitive.ObjectID) (*mongo.DeleteResult, error) {
+	filter := bson.M{"_id": expId}
+	res, err := expCollection.DeleteOne(
 		context.TODO(),
 		filter,
 	)
