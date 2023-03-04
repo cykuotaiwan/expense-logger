@@ -2,6 +2,7 @@ package models
 
 import (
 	expense "expense-logger/web/app/models/expense"
+	user "expense-logger/web/app/models/user"
 
 	"context"
 	"log"
@@ -56,6 +57,7 @@ func Disconnect() {
 func Init() {
 	Connect()
 	expense.SetCollections(client, &ctx)
+	user.SetCollections(client, &ctx)
 }
 
 func Close() {
