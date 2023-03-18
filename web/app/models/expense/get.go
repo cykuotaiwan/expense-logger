@@ -11,6 +11,10 @@ import (
 )
 
 func GetExpenseLatest(cnt uint8, offset uint8) ([]Expense, error) {
+	if cnt == 0 {
+		return nil, nil
+	}
+
 	option := options.Find()
 	option.SetSort(bson.M{"$natural": -1})
 	option.SetLimit(int64(cnt))
@@ -34,7 +38,7 @@ func GetExpenseByDate(startDate, endDate time.Time) ([]Expense, error) {
 		return nil, fmt.Errorf("invalid iarameters: startDate should be earlier than endDate")
 	}
 	if startDate.Equal(endDate) {
-		return nil, fmt.Errorf("nvalid iarameters: startDate should be earlier than endDate")
+		return nil, fmt.Errorf("invalid iarameters: startDate should be earlier than endDate")
 	}
 
 	option := options.Find()
