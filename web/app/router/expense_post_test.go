@@ -56,9 +56,25 @@ func TestPostExpense(t *testing.T) {
 		expCnt, expExist := rsp["expenseInsertedCnt"]
 
 		assert.Nil(t, err)
-		assert.Equal(t, 2, itemCnt)
-		assert.Equal(t, 1, expCnt)
 		assert.True(t, itemExist)
 		assert.True(t, expExist)
+		assert.Equal(t, 2, itemCnt)
+		assert.Equal(t, 1, expCnt)
+	})
+	t.Run("with empty payload", func(t *testing.T) {
+		writer, err := util.PerformRequest(router, "POST", path, nil)
+		assert.Equal(t, http.StatusBadRequest, writer.Code)
+		assert.Nil(t, err)
+
+		var rsp map[string]int
+		err = json.Unmarshal([]byte(writer.Body.Bytes()), &rsp)
+		itemCnt, itemExist := rsp["itemInsertedCnt"]
+		expCnt, expExist := rsp["expenseInsertedCnt"]
+
+		assert.Nil(t, err)
+		assert.False(t, itemExist)
+		assert.False(t, expExist)
+		assert.Equal(t, 0, itemCnt)
+		assert.Equal(t, 0, expCnt)
 	})
 }
