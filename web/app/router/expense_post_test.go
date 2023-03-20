@@ -56,8 +56,8 @@ func TestPostExpense(t *testing.T) {
 		expCnt, expExist := rsp["expenseInsertedCnt"]
 
 		assert.Nil(t, err)
-		assert.Greater(t, 0, itemCnt)
-		assert.Greater(t, 0, expCnt)
+		assert.Equal(t, 2, itemCnt)
+		assert.Equal(t, 1, expCnt)
 		assert.True(t, itemExist)
 		assert.True(t, expExist)
 	})

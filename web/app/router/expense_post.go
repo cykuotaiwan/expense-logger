@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	exp "expense-logger/web/app/models/expense"
 	"io"
-	"log"
 	"net/http"
 	"time"
 
@@ -72,19 +71,13 @@ func PostExpense(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
-	log.Print(payload)
-	log.Print(len(payload.Items))
 
 	// insert items
 	items := make([]exp.Item, len(payload.Items))
-	for _, it := range payload.Items {
-		items = append(items, it.parse())
+	for index, it := range payload.Items {
+		items[index] = it.parse()
 	}
-	log.Print(len(items))
-	log.Print(items)
 	resItem, err := exp.InsertItem(items)
-	log.Print(err)
-	log.Print(resItem)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, nil)
 		return
