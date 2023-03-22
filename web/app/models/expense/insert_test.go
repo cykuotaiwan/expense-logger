@@ -1,20 +1,18 @@
 package expense_test
 
 import (
-	config "expense-logger/configs"
-	db "expense-logger/web/app/models"
 	exp "expense-logger/web/app/models/expense"
+	util "expense-logger/web/app/util"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func TestInsertItem(t *testing.T) {
-	// db connection
-	config.Init()
-	db.Init()
-	defer db.Close()
+	util.NewDBConnection()
+	defer util.EndDBConnection()
 
 	// setup test data
 	var newItems = []exp.Item{
@@ -34,37 +32,36 @@ func TestInsertItem(t *testing.T) {
 	// main test
 	t.Run("nil", func(t *testing.T) {
 		res, err := exp.InsertItem(nil)
-		if err != nil || res != nil {
-			t.Errorf(err.Error())
-		}
+
+		assert.Nil(t, err)
+		assert.Nil(t, res)
 	})
 	t.Run("empty array", func(t *testing.T) {
 		res, err := exp.InsertItem([]exp.Item{})
-		if err != nil || res != nil {
-			t.Errorf(err.Error())
-		}
+
+		assert.Nil(t, err)
+		assert.Nil(t, res)
 	})
 	t.Run("empty items", func(t *testing.T) {
 		res, err := exp.InsertItem([]exp.Item{{}, {}})
-		if err != nil || res != nil {
-			t.Errorf(err.Error())
-		}
+
+		assert.Nil(t, err)
+		assert.Nil(t, res)
 	})
 	// test insert items
 	t.Run("two items", func(t *testing.T) {
 		res, err := exp.InsertItem(newItems)
-		if err != nil || res == nil {
-			t.Errorf(err.Error())
-		}
+
+		assert.Nil(t, err)
+		assert.NotNil(t, res)
+		assert.Len(t, res.InsertedIDs, 2)
 	})
 
 }
 
 func TestInsertExpense(t *testing.T) {
-	// db connection
-	config.Init()
-	db.Init()
-	defer db.Close()
+	util.NewDBConnection()
+	defer util.EndDBConnection()
 
 	// setup test data
 	var newExpense = exp.Expense{
@@ -76,29 +73,27 @@ func TestInsertExpense(t *testing.T) {
 	// main test
 	t.Run("nil", func(t *testing.T) {
 		res, err := exp.InsertExpense(nil)
-		if err != nil || res != nil {
-			t.Errorf(err.Error())
-		}
+
+		assert.Nil(t, err)
+		assert.Nil(t, res)
 	})
 	t.Run("empty", func(t *testing.T) {
 		res, err := exp.InsertExpense(&exp.Expense{})
-		if err != nil || res != nil {
-			t.Errorf(err.Error())
-		}
+
+		assert.Nil(t, err)
+		assert.Nil(t, res)
 	})
 	t.Run("valid value", func(t *testing.T) {
 		res, err := exp.InsertExpense(&newExpense)
-		if err != nil || res == nil {
-			t.Errorf(err.Error())
-		}
+
+		assert.Nil(t, err)
+		assert.NotNil(t, res)
 	})
 }
 
 func TestInsertItemExpense(t *testing.T) {
-	// db connection
-	config.Init()
-	db.Init()
-	defer db.Close()
+	util.NewDBConnection()
+	defer util.EndDBConnection()
 
 	// setup test data
 	var newItems = []exp.Item{
@@ -123,17 +118,18 @@ func TestInsertItemExpense(t *testing.T) {
 
 	t.Run("both item and expense", func(t *testing.T) {
 		resItem, errItem := exp.InsertItem(newItems)
-		if errItem != nil || resItem == nil {
-			t.Errorf(errItem.Error())
-		}
+
+		assert.Nil(t, errItem)
+		assert.NotNil(t, resItem)
+		assert.Len(t, resItem.InsertedIDs, 2)
 
 		newExpense.ItemIDs = make([]primitive.ObjectID, 0, len(resItem.InsertedIDs))
 		for _, id := range resItem.InsertedIDs {
 			newExpense.ItemIDs = append(newExpense.ItemIDs, id.(primitive.ObjectID))
 		}
 		resExp, errExp := exp.InsertExpense(&newExpense)
-		if errExp != nil || resExp == nil {
-			t.Errorf(errExp.Error())
-		}
+
+		assert.Nil(t, errExp)
+		assert.NotNil(t, resExp)
 	})
 }

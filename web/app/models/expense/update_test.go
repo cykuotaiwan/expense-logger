@@ -4,17 +4,17 @@ import (
 	config "expense-logger/configs"
 	db "expense-logger/web/app/models"
 	exp "expense-logger/web/app/models/expense"
+	util "expense-logger/web/app/util"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func TestUpdateItem(t *testing.T) {
-	// db connection
-	config.Init()
-	db.Init()
-	defer db.Close()
+	util.NewDBConnection()
+	defer util.EndDBConnection()
 
 	// generate test data
 	var newItem = []exp.Item{
@@ -30,11 +30,13 @@ func TestUpdateItem(t *testing.T) {
 	resTest, _ := exp.InsertItem(newItem)
 
 	t.Run("valid value", func(t *testing.T) {
-		id := (*resTest).InsertedIDs[0].(primitive.ObjectID)
+		id := resTest.InsertedIDs[0].(primitive.ObjectID)
 		item := newItem
 		item[0].Id = id
 		item[0].Count = 10
+
 		res, err := exp.UpdateItem(item[0])
+		assert.Nil(t, err)
 		if err != nil {
 			t.Error(err.Error())
 		}
