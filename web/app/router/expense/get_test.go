@@ -1,10 +1,10 @@
-package router_test
+package expense_test
 
 import (
 	"bytes"
 	"encoding/json"
 	exp "expense-logger/web/app/models/expense"
-	rt "expense-logger/web/app/router"
+	rt "expense-logger/web/app/router/expense"
 	util "expense-logger/web/app/util"
 	"net/http"
 	"testing"

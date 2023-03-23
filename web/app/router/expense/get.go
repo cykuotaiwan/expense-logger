@@ -1,4 +1,4 @@
-package router
+package expense
 
 import (
 	"encoding/json"
@@ -9,16 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-type latestParam struct {
-	Count  int `json:"cnt"`
-	Offset int `json:"offset"`
-}
-
-type getByDateParam struct {
-	StartDate time.Time `json:"startDate"`
-	EndDate   time.Time `json:"endDate"`
-}
 
 func GetExpenseLatest(c *gin.Context) {
 	var param latestParam
