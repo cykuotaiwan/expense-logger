@@ -37,6 +37,10 @@ func UpdateItem(newItem Item) (*mongo.UpdateResult, error) {
 	return res, nil
 }
 
+func UpdateItemSet(newItemSet []Item) (*mongo.UpdateResult, error) {
+
+}
+
 func UpdateExpense(newExpense Expense) (*mongo.UpdateResult, error) {
 	filter := bson.M{
 		"_id": bson.M{"$eq": newExpense.Id},

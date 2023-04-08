@@ -46,7 +46,7 @@ func PostExpense(c *gin.Context) {
 	}
 
 	// insert expense
-	expense := payload.parse(resItem)
+	expense := payload.parseWithInsertResult(resItem)
 	resExp, err := exp.InsertExpense(&expense)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, nil)
